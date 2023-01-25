@@ -8,10 +8,11 @@ public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioSource _audio;
     [SerializeField] private float _growthTime;
-    [SerializeField] private Detect _detect;
+    [SerializeField] private AlarmControl _alarmControl;
 
     private Coroutine _coroutine;
-    private float _targetVolume;
+    private float _minVolume = 0f;
+    private float _maxVolume = 1f;
 
     private void Awake()
     {
@@ -20,41 +21,37 @@ public class Alarm : MonoBehaviour
 
     private void OnEnable()
     {
-        _detect.Entered += StartAlarm;
-        _detect.CameOut += StopAlarm;
+        _alarmControl.Entered += ToStart;
+        _alarmControl.CameOut += ToStop;
     }
 
     private void OnDisable()
     {
-        _detect.Entered -= StartAlarm;
-        _detect.CameOut -= StopAlarm;
+        _alarmControl.Entered -= ToStart;
+        _alarmControl.CameOut -= ToStop;
     }
     
-    private void StartAlarm()
+    private void ToStart()
     {
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
         }
 
-        _targetVolume = 1f;
-
-        _coroutine = StartCoroutine(FadeAudioVolumeTo());
+        _coroutine = StartCoroutine(FadeAudioVolumeTo(_maxVolume));
     }
 
-    private void StopAlarm()
+    private void ToStop()
     {
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
         }
 
-        _targetVolume = 0f;
-
-        _coroutine = StartCoroutine(FadeAudioVolumeTo());
+        _coroutine = StartCoroutine(FadeAudioVolumeTo(_minVolume));
     }
 
-    private IEnumerator FadeAudioVolumeTo()
+    private IEnumerator FadeAudioVolumeTo(float targetVolume)
     {
         if (_audio.isPlaying == false)
         {
@@ -63,13 +60,13 @@ public class Alarm : MonoBehaviour
         
         float stepTime = 1 / _growthTime;
 
-        while (_audio.volume != _targetVolume)
+        while (_audio.volume != targetVolume)
         {
-            _audio.volume = Mathf.MoveTowards(_audio.volume, _targetVolume, stepTime * Time.deltaTime);
+            _audio.volume = Mathf.MoveTowards(_audio.volume, targetVolume, stepTime * Time.deltaTime);
             yield return null;
         }
 
-        if (_targetVolume == 0)
+        if (targetVolume == 0)
         {
             _audio.Stop();
         }

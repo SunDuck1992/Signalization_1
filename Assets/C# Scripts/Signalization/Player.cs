@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     private bool _isFaceRight = true;
     private float _coordinataX;
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKey(KeyCode.D))
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Detect : MonoBehaviour
+public class AlarmControl : MonoBehaviour
 {
     public event UnityAction Entered;
     public event UnityAction CameOut;

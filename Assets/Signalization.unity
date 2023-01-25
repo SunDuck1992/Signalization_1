@@ -823,7 +823,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audio: {fileID: 1628728038}
   _growthTime: 5
-  _detect: {fileID: 1628728034}
+  _alarmControl: {fileID: 1628728034}
 --- !u!114 &1628728034
 MonoBehaviour:
   m_ObjectHideFlags: 0
